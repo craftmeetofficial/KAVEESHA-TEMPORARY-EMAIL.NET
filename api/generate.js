@@ -16,28 +16,25 @@ module.exports = async (req, res) => {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({
-      error: 'Method not allowed'
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Check environment variables
-    if (!process.env.DOMAIN) {
-      throw new Error('DOMAIN environment variable is missing');
-    }
-
-    const db = getDb();
-
     const domain = process.env.DOMAIN;
     const expirationMinutes = parseInt(
       process.env.INBOX_EXPIRATION_MINUTES || '10',
       10
     );
 
+    if (!domain) {
+      throw new Error('DOMAIN environment variable is missing');
+    }
+
     if (!Number.isFinite(expirationMinutes) || expirationMinutes <= 0) {
       throw new Error('Invalid inbox expiration setting');
     }
+
+    const db = getDb();
 
     let localPart;
     let exists = true;
@@ -50,11 +47,7 @@ module.exports = async (req, res) => {
         throw new Error('Failed to generate email address');
       }
 
-      const snap = await db
-        .collection('inboxes')
-        .doc(localPart)
-        .get();
-
+      const snap = await db.collection('inboxes').doc(localPart).get();
       exists = snap.exists;
       attempts++;
     }
@@ -65,9 +58,7 @@ module.exports = async (req, res) => {
 
     const token = generateSecureToken();
     const tokenHash = hashToken(token);
-
-    const expiresAt =
-      Date.now() + expirationMinutes * 60 * 1000;
+    const expiresAt = Date.now() + expirationMinutes * 60 * 1000;
 
     await db.collection('inboxes').doc(localPart).set({
       localPart,
