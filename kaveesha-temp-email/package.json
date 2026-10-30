@@ -1,0 +1,26 @@
+{
+  "name": "kaveesha-temporary-email",
+  "version": "1.0.0",
+  "description": "KAVEESHA TEMPORARY EMAIL.NET - Premium temporary email service",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node server.js",
+    "build": "echo 'Static frontend ready'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "mailgun.js": "^10.2.3",
+    "form-data": "^4.0.0",
+    "dompurify": "^3.1.6",
+    "jsdom": "^25.0.1",
+    "uuid": "^10.0.0",
+    "express-rate-limit": "^7.4.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
